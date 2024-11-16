@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #384664;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            width: 320px;
+            background-color: #2b3646;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .display {
+            background-color: #1e2733;
+            color: white;
+            font-size: 24px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: right;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #e8e8e8;
+            color: black;
+            font-size: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .operator {
+            background-color: #6b819b;
+            color: white;
+        }
+
+        .operator:hover {
+            background-color: #5a6e84;
+        }
+
+        .reset {
+            background-color: #50617a;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .reset:hover {
+            background-color: #445468;
+        }
+
+        .equal {
+            background-color: #d9534f;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .equal:hover {
+            background-color: #c12e2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">calc</div>
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button operator" onclick="deleteLast()">DEL</button>
+
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button operator" onclick="setOperator('+')">+</button>
+
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button operator" onclick="setOperator('-')">-</button>
+
+            <button class="button" onclick="appendNumber('.')">.</button>
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button operator" onclick="setOperator('/')">/</button>
+            <button class="button operator" onclick="setOperator('*')">×</button>
+
+            <button class="button reset" onclick="resetCalculator()">RESET</button>
+            <button class="button equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentNumber = '0';
+        let operator = '';
+        let previousNumber = '';
+
+        function updateDisplay() {
+            display.innerText = currentNumber;
+        }
+
+        function appendNumber(number) {
+            if (currentNumber === '0' || currentNumber === 'Error') {
+                currentNumber = number;
+            } else {
+                currentNumber += number;
+            }
+            updateDisplay();
+        }
+
+        function setOperator(op) {
+            if (operator && previousNumber) {
+                calculate();
+            }
+            operator = op;
+            previousNumber = currentNumber;
+            currentNumber = '0';
+        }
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousNumber);
+            const current = parseFloat(currentNumber);
+
+            if (isNaN(prev) || isNaN(current)) {
+                currentNumber = 'Error';
+                updateDisplay();
+                return;
+            }
+
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = current !== 0 ? prev / current : 'Error';
+                    break;
+                default:
+                    return;
+            }
+
+            currentNumber = result.toString();
+            operator = '';
+            previousNumber = '';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (currentNumber.length > 1) {
+                currentNumber = currentNumber.slice(0, -1);
+            } else {
+                currentNumber = '0';
+            }
+            updateDisplay();
+        }
+
+        function resetCalculator() {
+            currentNumber = '0';
+            operator = '';
+            previousNumber = '';
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
